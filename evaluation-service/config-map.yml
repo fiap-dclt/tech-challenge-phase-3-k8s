@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cfgmap-evaluation
+  namespace: evaluation
+data:
+  PORT: "8004"
+  AWS_REGION: "us-east-1"
+  FLAG_SERVICE_URL: "http://svc-flag.flag.svc.cluster.local:8002"
+  TARGETING_SERVICE_URL: "http://svc-targeting.targeting.svc.cluster.local:8003"

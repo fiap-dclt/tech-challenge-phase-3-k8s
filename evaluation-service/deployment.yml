@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dpl-evaluation
+  namespace: evaluation
+  labels:
+    app.kubernetes.io/name: dpl-evaluation
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: dpl-evaluation
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: dpl-evaluation
+    spec:
+      serviceAccountName: evaluation-service-account
+      imagePullSecrets:
+        - name: aws-ecr-cred
+      containers:
+        - name: evaluation-microservice
+          image: 640494160208.dkr.ecr.us-east-1.amazonaws.com/evaluation-service:latest
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: cfgmap-evaluation
+            - secretRef:
+                name: secrets-evaluation
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "200m"
+              memory: "256Mi"
+          ports:
+            - containerPort: 8004
+          startupProbe:
+            httpGet:
+              path: /health
+              port: 8004
+            periodSeconds: 5
+            failureThreshold: 12
+            timeoutSeconds: 2
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8004
+            periodSeconds: 5
+            failureThreshold: 3
+            timeoutSeconds: 2
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8004
+            periodSeconds: 15
+            failureThreshold: 3
+            timeoutSeconds: 3

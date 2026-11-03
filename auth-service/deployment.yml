@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dpl-auth
+  namespace: auth
+  labels:
+    app.kubernetes.io/name: dpl-auth
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: dpl-auth
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: dpl-auth
+    spec:
+      imagePullSecrets:
+        - name: aws-ecr-cred
+      containers:
+        - name: auth-microservice
+          image: 640494160208.dkr.ecr.us-east-1.amazonaws.com/auth-service:latest
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: cfgmap-auth
+            - secretRef:
+                name: secrets-auth
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "200m"
+              memory: "256Mi"
+          ports:
+            - containerPort: 8001
+          startupProbe:
+            httpGet:
+              path: /health
+              port: 8001
+            periodSeconds: 5
+            failureThreshold: 12
+            timeoutSeconds: 2
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8001
+            periodSeconds: 5
+            failureThreshold: 3
+            timeoutSeconds: 2
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8001
+            periodSeconds: 15
+            failureThreshold: 3
+            timeoutSeconds: 3

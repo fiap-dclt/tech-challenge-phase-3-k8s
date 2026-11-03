@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-auth
+  namespace: auth
+  labels:
+    app.kubernetes.io/name: dpl-auth
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: dpl-auth
+  ports:
+    - protocol: TCP
+      port: 8001
+      targetPort: 8001

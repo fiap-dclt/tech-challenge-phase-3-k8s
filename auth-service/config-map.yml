@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cfgmap-auth
+  namespace: auth
+data:
+  PORT: "8001"

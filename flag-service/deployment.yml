@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dpl-flag
+  namespace: flag
+  labels:
+    app.kubernetes.io/name: dpl-flag
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: dpl-flag
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: dpl-flag
+    spec:
+      imagePullSecrets:
+        - name: aws-ecr-cred
+      containers:
+        - name: flag-microservice
+          image: 640494160208.dkr.ecr.us-east-1.amazonaws.com/flag-service:latest
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: cfgmap-flag
+            - secretRef:
+                name: secrets-flag
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "200m"
+              memory: "256Mi"
+          ports:
+            - containerPort: 8002
+          startupProbe:
+            httpGet:
+              path: /health
+              port: 8002
+            periodSeconds: 5
+            failureThreshold: 12
+            timeoutSeconds: 2
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8002
+            periodSeconds: 5
+            failureThreshold: 3
+            timeoutSeconds: 2
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8002
+            periodSeconds: 15
+            failureThreshold: 3
+            timeoutSeconds: 3

@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cfgmap-flag
+  namespace: flag
+data:
+  PORT: "8002"
+  AUTH_SERVICE_URL: "http://svc-auth.auth.svc.cluster.local:8001"

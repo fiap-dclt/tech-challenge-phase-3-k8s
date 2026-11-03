@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-flag
+  namespace: flag
+  labels:
+    app.kubernetes.io/name: dpl-flag
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: dpl-flag
+  ports:
+    - protocol: TCP
+      port: 8002
+      targetPort: 8002

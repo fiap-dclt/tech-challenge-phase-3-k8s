@@ -1,0 +1,94 @@
+# AUTH SERVICE
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: auth-service
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: "https://github.com/fiap-dclt/tech-challenge-phase-3-k8s.git"
+    targetRevision: HEAD
+    path: auth-service
+  destination:
+    server: "https://kubernetes.default.svc"
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+---
+# FLAG SERVICE
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: flag-service
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: "https://github.com/fiap-dclt/tech-challenge-phase-3-k8s.git"
+    targetRevision: HEAD
+    path: flag-service
+  destination:
+    server: "https://kubernetes.default.svc"
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+---
+# TARGETING SERVICE
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: targeting-service
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: "https://github.com/fiap-dclt/tech-challenge-phase-3-k8s.git"
+    targetRevision: HEAD
+    path: targeting-service
+  destination:
+    server: "https://kubernetes.default.svc"
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+---
+# EVALUATION SERVICE
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: evaluation-service
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: "https://github.com/fiap-dclt/tech-challenge-phase-3-k8s.git"
+    targetRevision: HEAD
+    path: evaluation-service
+  destination:
+    server: "https://kubernetes.default.svc"
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+---
+# ANALYTICS SERVICE
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: analytics-service
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: "https://github.com/fiap-dclt/tech-challenge-phase-3-k8s.git"
+    targetRevision: HEAD
+    path: analytics-service
+  destination:
+    server: "https://kubernetes.default.svc"
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cfgmap-analytics
+  namespace: analytics
+data:
+  PORT: "8005"
+  AWS_REGION: "us-east-1"

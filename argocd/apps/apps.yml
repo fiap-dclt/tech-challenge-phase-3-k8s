@@ -26,7 +26,7 @@ metadata:
   name: auth-service
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "0"
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   project: default
   source:
@@ -47,7 +47,7 @@ metadata:
   name: flag-service
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "1"
+    argocd.argoproj.io/sync-wave: "2"
 spec:
   project: default
   source:
@@ -68,7 +68,7 @@ metadata:
   name: targeting-service
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "1"
+    argocd.argoproj.io/sync-wave: "2"
 spec:
   project: default
   source:
@@ -89,7 +89,7 @@ metadata:
   name: evaluation-service
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/sync-wave: "3"
 spec:
   project: default
   source:
@@ -110,7 +110,7 @@ metadata:
   name: analytics-service
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "3"
+    argocd.argoproj.io/sync-wave: "4"
 spec:
   project: default
   source:

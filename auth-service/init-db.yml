@@ -22,7 +22,7 @@ spec:
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
-                  name: aws-secrets-auth
+                  name: aws-combined-auth
                   key: DATABASE_URL
           volumeMounts:
             - name: sql-script

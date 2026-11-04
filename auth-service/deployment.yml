@@ -19,7 +19,7 @@ spec:
         - name: aws-ecr-cred
       containers:
         - name: auth-microservice
-          image: 640494160208.dkr.ecr.us-east-1.amazonaws.com/auth-service:latest
+          image: 640494160208.dkr.ecr.us-east-1.amazonaws.com/auth-service:ca2757096e156a85f4c799ff49a9b77c5c0773cb
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:

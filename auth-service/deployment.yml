@@ -25,7 +25,7 @@ spec:
             - configMapRef:
                 name: cfgmap-auth
             - secretRef:
-                name: secrets-auth
+                name: aws-secrets-auth
           resources:
             requests:
               cpu: "100m"

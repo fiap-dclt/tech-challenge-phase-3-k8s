@@ -1,3 +1,25 @@
+# Cluster Secret Store
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cluster-infrastructure
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"
+spec:
+  project: default
+  source:
+    repoURL: "https://github.com/fiap-dclt/tech-challenge-phase-3-k8s.git"
+    targetRevision: HEAD
+    path: infra
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+---
 # AUTH SERVICE
 apiVersion: argoproj.io/v1alpha1
 kind: Application

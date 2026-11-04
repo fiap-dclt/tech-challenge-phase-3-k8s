@@ -25,7 +25,7 @@ spec:
             - configMapRef:
                 name: cfgmap-flag
             - secretRef:
-                name: secrets-flag
+                name: aws-parameter-store-flag
           resources:
             requests:
               cpu: "100m"

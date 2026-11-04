@@ -25,6 +25,8 @@ spec:
             - configMapRef:
                 name: cfgmap-auth
             - secretRef:
+                name: aws-parameter-store-auth
+            - secretRef:
                 name: aws-secrets-auth
           resources:
             requests:

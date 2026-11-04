@@ -25,7 +25,7 @@ spec:
             - configMapRef:
                 name: cfgmap-targeting
             - secretRef:
-                name: secrets-targeting
+                name: aws-parameter-store-targeting
           resources:
             requests:
               cpu: "100m"

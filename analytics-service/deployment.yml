@@ -26,7 +26,7 @@ spec:
             - configMapRef:
                 name: cfgmap-analytics
             - secretRef:
-                name: secrets-analytics
+                name: aws-parameter-store-analytics
           resources:
             requests:
               cpu: "100m"

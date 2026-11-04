@@ -26,7 +26,7 @@ spec:
             - configMapRef:
                 name: cfgmap-evaluation
             - secretRef:
-                name: secrets-evaluation
+                name: aws-parameter-store-evaluation
           resources:
             requests:
               cpu: "100m"

@@ -20,7 +20,7 @@ spec:
         - name: aws-ecr-cred
       containers:
         - name: evaluation-microservice
-          image: 640494160208.dkr.ecr.us-east-1.amazonaws.com/evaluation-service:latest
+          image: 640494160208.dkr.ecr.us-east-1.amazonaws.com/evaluation-service:757ff8d8248434476bfe359a7598327b986951a5
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:

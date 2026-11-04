@@ -18,6 +18,8 @@ spec:
     automated:
       prune: true
       selfHeal: true
+  syncOptions:
+    - ServerSideApply=true
 ---
 # AUTH SERVICE
 apiVersion: argoproj.io/v1alpha1

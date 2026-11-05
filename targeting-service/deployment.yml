@@ -17,8 +17,6 @@ spec:
       labels:
         app.kubernetes.io/name: dpl-targeting
     spec:
-      imagePullSecrets:
-        - name: aws-ecr-cred
       containers:
         - name: targeting-microservice
           image: 640494160208.dkr.ecr.us-east-1.amazonaws.com/targeting-service:b64383d3097555e615b7b14b3f795c3055ae5492

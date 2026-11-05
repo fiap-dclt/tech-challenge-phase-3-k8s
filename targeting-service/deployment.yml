@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: targeting-microservice
-          image: 640494160208.dkr.ecr.us-east-1.amazonaws.com/targeting-service:ebd4474d527bb740597f4b49d1503b112697959a
+          image: 640494160208.dkr.ecr.us-east-1.amazonaws.com/targeting-service:ee81af6abc595194d08c5bc4a74bfdc91060baf7
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:

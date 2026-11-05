@@ -17,7 +17,7 @@ spec:
       containers:
         - name: psql-runner
           image: postgres:18-alpine
-          command: ["sh", "-c", 'psql "$DATABASE_URL" -f /scripts/init.sql']
+          command: ["sh", "/scripts/init.sh"]
           env:
             - name: DATABASE_URL
               valueFrom:

@@ -4,3 +4,5 @@ metadata:
   name: evaluation
   labels:
     name: evaluation
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"

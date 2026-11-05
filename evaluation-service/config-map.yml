@@ -3,6 +3,8 @@ kind: ConfigMap
 metadata:
   name: cfgmap-evaluation
   namespace: evaluation
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
 data:
   PORT: "8004"
   AWS_REGION: "us-east-1"

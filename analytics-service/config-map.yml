@@ -3,6 +3,8 @@ kind: ConfigMap
 metadata:
   name: cfgmap-analytics
   namespace: analytics
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
 data:
   PORT: "8005"
   AWS_REGION: "us-east-1"

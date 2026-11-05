@@ -4,3 +4,5 @@ metadata:
   name: flag
   labels:
     name: flag
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"

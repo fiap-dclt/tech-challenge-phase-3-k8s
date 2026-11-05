@@ -5,6 +5,8 @@ metadata:
   namespace: analytics
   labels:
     app.kubernetes.io/name: svc-analytics
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   type: ClusterIP
   selector:

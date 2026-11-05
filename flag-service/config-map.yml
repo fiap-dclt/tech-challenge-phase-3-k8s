@@ -4,10 +4,23 @@ metadata:
   name: cfgmap-flag
   namespace: flag
   annotations:
-    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/sync-wave: "0"
 data:
   PORT: "8002"
   AUTH_SERVICE_URL: "http://svc-auth.auth.svc.cluster.local:8001"
+  init.sh: |
+    #!/bin/sh
+    # Extract the target database name from the URL
+    DB_NAME=$(echo "$DATABASE_URL" | awk -F'/' '{print $NF}' | awk -F'?' '{print $1}')
+
+    # Build a base URL pointing to the default 'postgres' DB
+    BASE_URL=$(echo "$DATABASE_URL" | sed "s|/$DB_NAME|/postgres|")
+
+    echo "Ensuring database $DB_NAME exists..."
+    psql "$BASE_URL" -tc "SELECT 1 FROM pg_database WHERE datname = '$DB_NAME'" | grep -q 1 || psql "$BASE_URL" -c "CREATE DATABASE \"$DB_NAME\";"
+
+    echo "Initializing schema..."
+    psql "$DATABASE_URL" -f /scripts/init.sql
   init.sql: |
     CREATE TABLE IF NOT EXISTS flags (
     id SERIAL PRIMARY KEY,

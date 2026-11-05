@@ -14,7 +14,7 @@ spec:
       restartPolicy: Never
       containers:
         - name: psql-runner
-          image: postgres:15-alpine
+          image: postgres:18-alpine
           command: ["sh", "/scripts/init.sh"]
           env:
             - name: DATABASE_URL

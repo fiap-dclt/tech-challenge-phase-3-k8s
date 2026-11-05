@@ -18,8 +18,6 @@ spec:
         app.kubernetes.io/name: dpl-analytics
     spec:
       serviceAccountName: analytics-service-account
-      imagePullSecrets:
-        - name: aws-ecr-cred
       containers:
         - name: analytics-microservice
           image: 640494160208.dkr.ecr.us-east-1.amazonaws.com/analytics-service:10a9528c695bf1240f027eb1486790eba7057034

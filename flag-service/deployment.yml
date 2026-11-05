@@ -17,8 +17,6 @@ spec:
       labels:
         app.kubernetes.io/name: dpl-flag
     spec:
-      imagePullSecrets:
-        - name: aws-ecr-cred
       containers:
         - name: flag-microservice
           image: 640494160208.dkr.ecr.us-east-1.amazonaws.com/flag-service:52638c910839040c766eca2e50157def1958816f

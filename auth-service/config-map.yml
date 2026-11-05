@@ -4,7 +4,7 @@ metadata:
   name: cfgmap-auth
   namespace: auth
   annotations:
-    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/sync-wave: "0"
 data:
   PORT: "8001"
   init.sh: |

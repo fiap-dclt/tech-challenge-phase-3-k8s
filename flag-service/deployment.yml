@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: flag-microservice
-          image: 640494160208.dkr.ecr.us-east-1.amazonaws.com/flag-service:52638c910839040c766eca2e50157def1958816f
+          image: 640494160208.dkr.ecr.us-east-1.amazonaws.com/flag-service:13b1484fe5b75b045d25d6b1d9a4f3e29725e913
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:

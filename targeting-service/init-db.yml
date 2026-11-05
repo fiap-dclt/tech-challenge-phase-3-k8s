@@ -20,7 +20,7 @@ spec:
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
-                  name: secrets-targeting
+                  name: aws-parameter-store-targeting
                   key: DATABASE_URL
           volumeMounts:
             - name: sql-script

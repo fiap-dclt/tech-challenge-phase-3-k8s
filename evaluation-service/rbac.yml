@@ -1,0 +1,17 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: evaluation-service-role
+  namespace: evaluation
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    resourceNames: ["evaluation-service-api-key"]
+    verbs: ["get", "patch"]
+  # Kubernetes RBAC não permite limitar 'create' por resourceNames.
+  # Esta permissão se restringe ao namespace evaluation.
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["create"]

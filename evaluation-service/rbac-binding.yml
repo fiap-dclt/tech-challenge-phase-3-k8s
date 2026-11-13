@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: evaluation-service-binding
+  namespace: evaluation
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+subjects:
+  - kind: ServiceAccount
+    name: evaluation-service-account
+    namespace: auth
+roleRef:
+  kind: Role
+  name: evaluation-service-role
+  apiGroup: rbac.authorization.k8s.io

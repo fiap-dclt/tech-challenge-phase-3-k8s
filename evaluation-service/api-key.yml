@@ -1,0 +1,126 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: evaluation-service-api-key-bootstrap
+  namespace: auth
+  annotations:
+    argocd.argoproj.io/hook: Sync
+    argocd.argoproj.io/sync-wave: "0"
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+spec:
+  backoffLimit: 2
+  activeDeadlineSeconds: 240
+  template:
+    spec:
+      serviceAccountName: evaluation-service-account
+      restartPolicy: Never
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: bootstrap
+          image: python:3.13-alpine
+          imagePullPolicy: IfNotPresent
+          command: ["python", "-c"]
+          env:
+            - name: PYTHONDONTWRITEBYTECODE
+              value: "1"
+            - name: MASTER_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aws-combined-auth
+                  key: MASTER_KEY
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          args:
+            - |
+              import base64
+              import json
+              import os
+              import ssl
+              import sys
+              import time
+              from urllib.error import HTTPError, URLError
+              from urllib.request import Request, urlopen
+
+              AUTH = "http://svc-auth.auth.svc.cluster.local:8001"
+              API = "https://kubernetes.default.svc/api/v1/namespaces/evaluation/secrets"
+              NAME = "evaluation-service-api-key"
+              SA = "/var/run/secrets/kubernetes.io/serviceaccount"
+              TOKEN = open(SA + "/token", encoding="utf-8").read().strip()
+              TLS = ssl.create_default_context(cafile=SA + "/ca.crt")
+
+              def call(url, method="GET", data=None, headers=None, tls=None):
+                  encoded = json.dumps(data).encode() if data is not None else None
+                  req = Request(url, data=encoded, method=method, headers=headers or {})
+                  try:
+                      with urlopen(req, timeout=5, context=tls) as resp:
+                          raw = resp.read()
+                          return resp.status, json.loads(raw) if raw else {}
+                  except HTTPError as exc:
+                      exc.close()
+                      return exc.code, {}
+
+              def k8s(method, suffix="", data=None, content_type="application/json"):
+                  return call(API + suffix, method, data,
+                              {"Authorization": "Bearer " + TOKEN,
+                               "Content-Type": content_type}, TLS)
+
+              # Mesmo que a Application auth-service ainda esteja sincronizando,
+              # aguarda a API real responder antes de criar a chave.
+              for attempt in range(60):
+                  try:
+                      status, _ = call(AUTH + "/health")
+                      if status == 200:
+                          break
+                  except (URLError, TimeoutError, OSError):
+                      pass
+                  time.sleep(2)
+              else:
+                  raise RuntimeError("auth-service indisponivel apos tentativas")
+
+              status, secret = k8s("GET", "/" + NAME)
+              if status not in (200, 404):
+                  raise RuntimeError(f"Kubernetes GET secret retornou {status}")
+
+              if status == 200:
+                  stored = (secret.get("data") or {}).get("SERVICE_API_KEY")
+                  if stored:
+                      current_key = base64.b64decode(stored).decode()
+                      check, _ = call(AUTH + "/validate", headers={
+                          "Authorization": "Bearer " + current_key})
+                      if check == 200:
+                          print("SERVICE_API_KEY existente e valida; sem alteracoes.")
+                          sys.exit(0)
+                      if check != 401:
+                          raise RuntimeError(f"Nao foi possivel validar chave: {check}")
+                      print("Chave existente invalida; substituindo.")
+
+              code, obj = call(AUTH + "/admin/keys", method="POST",
+                               data={"name": "evaluation-service"}, headers={
+                                   "Authorization": "Bearer " + os.environ["MASTER_KEY"],
+                                   "Content-Type": "application/json"})
+              if code != 201 or not obj.get("key"):
+                  raise RuntimeError(f"Nao foi possivel criar chave no auth-service: {code}")
+
+              encoded_key = base64.b64encode(obj["key"].encode()).decode()
+              if status == 404:
+                  code, _ = k8s("POST", data={
+                      "apiVersion": "v1", "kind": "Secret",
+                      "metadata": {"name": NAME, "namespace": "evaluation"},
+                      "type": "Opaque", "data": {"SERVICE_API_KEY": encoded_key}})
+                  expected = 201
+              else:
+                  code, _ = k8s("PATCH", "/" + NAME,
+                                 {"data": {"SERVICE_API_KEY": encoded_key}},
+                                 "application/merge-patch+json")
+                  expected = 200
+              if code != expected:
+                  raise RuntimeError(f"Falha ao gravar Secret no Kubernetes: {code}")
+              print("Chave criada e gravada em evaluation/evaluation-service-api-key.")

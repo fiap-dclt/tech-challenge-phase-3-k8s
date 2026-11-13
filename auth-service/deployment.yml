@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: auth-microservice
-          image: 640494160208.dkr.ecr.us-east-1.amazonaws.com/auth-service:ca2757096e156a85f4c799ff49a9b77c5c0773cb
+          image: 640494160208.dkr.ecr.us-east-1.amazonaws.com/auth-service:d2edaf613fc9e848c2a84400a39d01f679a6f830
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:

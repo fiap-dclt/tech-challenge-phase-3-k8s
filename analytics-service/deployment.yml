@@ -20,7 +20,7 @@ spec:
       serviceAccountName: analytics-service-account
       containers:
         - name: analytics-microservice
-          image: 640494160208.dkr.ecr.us-east-1.amazonaws.com/analytics-service:10a9528c695bf1240f027eb1486790eba7057034
+          image: 640494160208.dkr.ecr.us-east-1.amazonaws.com/analytics-service:f91e056dc2cc7c542c70e825d345157fa65d593d
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:

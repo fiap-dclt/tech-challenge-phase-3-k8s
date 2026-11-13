@@ -1,0 +1,15 @@
+# O EKS Auto Mode usa ebs.csi.eks.amazonaws.com (não ebs.csi.aws.com).
+# Não configurar como StorageClass padrão para evitar afetar outros deployments.
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: auto-ebs-gp3
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+provisioner: ebs.csi.eks.amazonaws.com
+parameters:
+  type: gp3
+  encrypted: "true"
+volumeBindingMode: WaitForFirstConsumer
+allowVolumeExpansion: true
+reclaimPolicy: Retain

@@ -1,0 +1,89 @@
+# O kube-prometheus-stack já inclui Grafana; não instalar um chart Grafana extra.
+# Este perfil é adequado para começar um laboratório (sem HA).
+fullnameOverride: kps
+
+# Control plane do EKS é gerenciado pela AWS.
+kubeApiServer:
+  enabled: true
+kubeControllerManager:
+  enabled: false
+kubeScheduler:
+  enabled: false
+kubeEtcd:
+  enabled: false
+kubeProxy:
+  enabled: false
+
+# Node-exporter depende de acessos ao host e ficará desligado no Auto Mode.
+nodeExporter:
+  enabled: false
+prometheus-node-exporter:
+  enabled: false
+
+# Evita alertas de targets não existentes no control plane gerenciado.
+defaultRules:
+  create: false
+alertmanager:
+  enabled: false
+
+kubeStateMetrics:
+  enabled: true
+
+prometheusOperator:
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      memory: 384Mi
+
+prometheus:
+  enabled: true
+  prometheusSpec:
+    retention: 7d
+    retentionSize: 8GB
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+      limits:
+        memory: 1536Mi
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          accessModes: [ReadWriteOnce]
+          storageClassName: auto-ebs-gp3
+          resources:
+            requests:
+              storage: 10Gi
+    # Seleciona ServiceMonitors também criados por outros Helm releases.
+    serviceMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorSelector: {}
+    serviceMonitorNamespaceSelector: {}
+    podMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelector: {}
+    podMonitorNamespaceSelector: {}
+
+grafana:
+  enabled: true
+  service:
+    type: ClusterIP
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      memory: 768Mi
+  persistence:
+    enabled: true
+    type: pvc
+    storageClassName: auto-ebs-gp3
+    accessModes: [ReadWriteOnce]
+    size: 5Gi
+  additionalDataSources:
+    - name: Loki
+      uid: loki
+      type: loki
+      access: proxy
+      url: http://loki-gateway.observability.svc.cluster.local
+      isDefault: false

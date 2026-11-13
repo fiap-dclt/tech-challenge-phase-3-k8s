@@ -1,0 +1,116 @@
+# O root-app existente no repositório monitora argocd/apps.
+# Cada Application gerencia os recursos do chart ou do bootstrap do observability.
+# Na primeira instalação, sincronize sequencialmente: bootstrap -> metrics -> loki -> otel.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: observability-bootstrap
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/fiap-dclt/tech-challenge-phase-3-k8s.git
+    targetRevision: main
+    path: observability/bootstrap
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: observability
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+---
+# Prometheus Operator fornece a CRD ServiceMonitor usada pelo Collector.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: observability-metrics
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+spec:
+  project: default
+  sources:
+    - repoURL: https://prometheus-community.github.io/helm-charts
+      chart: kube-prometheus-stack
+      targetRevision: 92.21.2
+      helm:
+        releaseName: kps
+        valueFiles:
+          - $values/observability/values/kube-prometheus-stack.yaml
+    - repoURL: https://github.com/fiap-dclt/tech-challenge-phase-3-k8s.git
+      targetRevision: main
+      ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: observability
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: observability-loki
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+spec:
+  project: default
+  sources:
+    - repoURL: https://grafana-community.github.io/helm-charts
+      chart: loki
+      targetRevision: 18.7.6
+      helm:
+        releaseName: loki
+        valueFiles:
+          - $values/observability/values/loki.yaml
+    - repoURL: https://github.com/fiap-dclt/tech-challenge-phase-3-k8s.git
+      targetRevision: main
+      ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: observability
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+---
+# OTel Collector é o ponto central para a telemetria instrumentada da aplicação.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: observability-otel
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  project: default
+  sources:
+    - repoURL: https://open-telemetry.github.io/opentelemetry-helm-charts
+      chart: opentelemetry-collector
+      targetRevision: 0.178.2
+      helm:
+        releaseName: otel-gateway
+        valueFiles:
+          - $values/observability/values/otel-collector.yaml
+    - repoURL: https://github.com/fiap-dclt/tech-challenge-phase-3-k8s.git
+      targetRevision: main
+      ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: observability
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

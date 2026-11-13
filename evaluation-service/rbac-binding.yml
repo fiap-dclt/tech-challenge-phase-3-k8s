@@ -7,7 +7,7 @@ metadata:
     argocd.argoproj.io/sync-wave: "-1"
 subjects:
   - kind: ServiceAccount
-    name: evaluation-service-account
+    name: evaluation-service-account-api-key
     namespace: auth
 roleRef:
   kind: Role

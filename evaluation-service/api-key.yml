@@ -12,7 +12,7 @@ spec:
   activeDeadlineSeconds: 240
   template:
     spec:
-      serviceAccountName: evaluation-service-account
+      serviceAccountName: evaluation-service-account-api-key
       restartPolicy: Never
       securityContext:
         runAsNonRoot: true

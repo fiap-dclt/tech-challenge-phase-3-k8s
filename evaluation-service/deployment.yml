@@ -20,7 +20,7 @@ spec:
       serviceAccountName: evaluation-service-account
       containers:
         - name: evaluation-microservice
-          image: 640494160208.dkr.ecr.us-east-1.amazonaws.com/evaluation-service:de5c4bdc92d223e194af8105dee16ec932ffa0ba
+          image: 640494160208.dkr.ecr.us-east-1.amazonaws.com/evaluation-service:f87a055d88724cc2e7948e983d7210079841f608
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:

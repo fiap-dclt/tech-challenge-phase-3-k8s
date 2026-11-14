@@ -23,7 +23,7 @@ spec:
           imagePullPolicy: IfNotPresent
           # Envia os três sinais via OTLP/HTTP ao Collector central.
           env:
-            - name: OTEL_flag-service
+            - name: OTEL_SERVICE_NAME
               value: "flag-service"
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
               value: "http://otel-gateway.observability.svc.cluster.local:4318"

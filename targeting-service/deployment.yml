@@ -21,6 +21,20 @@ spec:
         - name: targeting-microservice
           image: 640494160208.dkr.ecr.us-east-1.amazonaws.com/targeting-service:744c9bebc9e543f71b79f8955792581f1d0b06b9
           imagePullPolicy: IfNotPresent
+          # Envia os três sinais via OTLP/HTTP ao Collector central.
+          env:
+            - name: OTEL_SERVICE_NAME
+              value: "targeting-service"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "http://otel-gateway.observability.svc.cluster.local:4318"
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: "http/protobuf"
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "deployment.environment.name=prod,k8s.cluster.name=eks-prod"
+            - name: OTEL_TRACES_SAMPLER_ARG
+              value: "1.0"
+            - name: OTEL_PYTHON_FLASK_EXCLUDED_URLS
+              value: "/health"
           envFrom:
             - configMapRef:
                 name: cfgmap-targeting

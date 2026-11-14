@@ -22,6 +22,18 @@ spec:
         - name: evaluation-microservice
           image: 640494160208.dkr.ecr.us-east-1.amazonaws.com/evaluation-service:f87a055d88724cc2e7948e983d7210079841f608
           imagePullPolicy: IfNotPresent
+          # Envia os três sinais via OTLP/HTTP ao Collector central.
+          env:
+            - name: OTEL_SERVICE_NAME
+              value: "evaluation-service"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "http://otel-gateway.observability.svc.cluster.local:4318"
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: "http/protobuf"
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "deployment.environment.name=prod,k8s.cluster.name=eks-prod"
+            - name: OTEL_TRACES_SAMPLER_ARG
+              value: "1.0"
           envFrom:
             - configMapRef:
                 name: cfgmap-evaluation

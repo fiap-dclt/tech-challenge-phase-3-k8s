@@ -17,7 +17,7 @@ serviceAccount:
 
 extraEnvs:
   - name: DD_SITE
-    value: datadoghq.com # Ajustar para a região da conta (us3, us5, eu etc.).
+    value: us5.datadoghq.com # Ajustar para a região da conta (us3, us5, eu etc.).
   - name: DD_API_KEY
     valueFrom:
       secretKeyRef:
